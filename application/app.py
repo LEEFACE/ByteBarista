@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from database import ( DBConnector )
+from user import User
 
 # Create the Flask application
 app = Flask(__name__)
@@ -37,35 +38,16 @@ def login():
         # Username and password from the flask session
         username = request.form['username']
         password = request.form['password']
+        user = User(username)
 
-        # instantiate and connect to RDS db
-        connector = DBConnector(RDS_SERVER, 5432, RDS_DB_NAME, RDS_USERNAME, RDS_PASSWORD)
-        ssh_tunnel = connector.connect()
-
-        sql = f"""
-        SELECT password FROM Staff WHERE CAST(staff_id AS VARCHAR) = CAST({username} AS VARCHAR)
-        """
-
-        result = connector.execute_query(sql)
-        print(result)
-
-        connector.close_conn(ssh_tunnel)
-
-        # if password in db, then go ahead, else no.
-        if result is not None: 
-            if password == result[0][0]:
-                print("passwords match")
-
-            # if username in users and users[username] == password:
-                # Store the username in the session
-                session['username'] = username
-                return redirect(url_for('user_home'))
-            else:
-                return render_template('login.html', error='Passwords do not match')  
+        if user.user_login(username, password, session):
+            return redirect(url_for('user_home'))
         else:
             return render_template('login.html', error='Invalid username or password')
+    
     else:
         return render_template('login.html')
+        
     
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -73,24 +55,14 @@ def register():
         # Username and password from the flask session
         username = request.form['username']
         password = request.form['password']
-
-        connector = DBConnector(RDS_SERVER, 5432, RDS_DB_NAME, RDS_USERNAME, RDS_PASSWORD)
-        ssh_tunnel = connector.connect()
-
-        sql = f"""
-        UPDATE Staff SET password = '{password}' WHERE CAST(staff_id AS VARCHAR) = CAST({username} AS VARCHAR)
-        """
+        user = User(username)
+        user.register(password)
         
-        ## update param allows the query to execute and commit instead of read-only
-        result = connector.execute_query(sql, "update") 
-        print(result)
-
-        connector.close_conn(ssh_tunnel)
-
         return redirect(url_for('login'))
 
     else:
         return render_template('register.html')
+
     
 @app.route('/index', methods=['POST'])
 def index():
@@ -99,7 +71,10 @@ def index():
 
 @app.route('/user_home', methods=['GET', 'POST'])
 def user_home():
+    username = session.get('username')
+
     ## Queries for load to page upon open
+    sql_name = f"SELECT first_name, last_name FROM Staff WHERE CAST(staff_id AS VARCHAR) = CAST({username} AS VARCHAR)"               
     sql_product = "SELECT Product.product, COUNT(salesreceipts.product_id) AS count_records FROM SalesReceipts LEFT JOIN Product ON Product.product_id=SalesReceipts.product_id GROUP BY 1 ORDER BY 2 DESC LIMIT 5;"
     sql_sales = "SELECT salesoutlet.neighbourhood, SUM(salesreceipts.line_item_amount) AS sales_to_date FROM SalesReceipts LEFT JOIN Salesoutlet ON Salesoutlet.sales_outlet_id=SalesReceipts.sales_outlet_id GROUP BY 1 ORDER BY 2 DESC LIMIT 3;"
 
@@ -107,12 +82,15 @@ def user_home():
     ssh_tunnel = connector.connect()
     
     ## update param allows the query to execute and commit instead of read-only
+    result_name = connector.execute_query(sql_name) 
     result_product = connector.execute_query(sql_product) 
     result_sales = connector.execute_query(sql_sales)
 
+    staff_name = f"{result_name[0][0]} {result_name[0][1]}"
+
     connector.close_conn(ssh_tunnel)
 
-    return render_template('user_home.html', row_product=result_product, row_sales=result_sales)
+    return render_template('user_home.html', row_product=result_product, row_sales=result_sales, staff_name=staff_name)
 
 
 @app.route('/upload', methods=['GET','POST'])
