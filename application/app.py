@@ -38,9 +38,9 @@ def login():
         # Username and password from the flask session
         username = request.form['username']
         password = request.form['password']
-        user = User(username)
+        user = User(username, password, session)
 
-        if user.user_login(username, password, session):
+        if user.user_login(session):
             return redirect(url_for('user_home'))
         else:
             return render_template('login.html', error='Invalid username or password')
@@ -55,7 +55,7 @@ def register():
         # Username and password from the flask session
         username = request.form['username']
         password = request.form['password']
-        user = User(username)
+        user = User(username, password, session)
         user.register(password)
         
         return redirect(url_for('login'))
