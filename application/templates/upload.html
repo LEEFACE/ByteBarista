@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload a File</title>
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,.1);
+            margin: 0 auto;
+            max-width: 500px;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #4e4e4e;
+            font-size: 32px;
+            margin: 0;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #4e4e4e;
+            font-size: 18px;
+            margin: 0;
+            margin-bottom: 20px;
+        }
+        input[type="submit"] {
+            background-color: #6d4c41;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 18px;
+            padding: 10px 20px;
+            transition: all .2s ease-in-out;
+        }
+        input[type="submit"]:hover {
+            background-color: #543c2b;
+            cursor: pointer;
+        }
+        button {
+        background-color: #6d4c41;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        transition: all .2s ease-in-out;
+        }
+        button:hover {
+            background-color: #543c2b;
+            cursor: pointer;
+        }
+        .alert-danger {
+        background-color: #FFEBE6;
+        border-color: #FFCCB3;
+        border-radius: 5px;
+        color: #FF5733;
+        font-size: 14px;
+        margin-bottom: 20px;
+        padding: 10px;
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Portal</h1>
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <h2>Please upload files individually</h2>
+        <h3>File types accepted: .csv</h3>
+        <form action="/upload_file" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <br>
+            <p></p>
+            <input type="submit" value="Upload">
+        </form>
+        <p></p>
+        <button onclick="window.history.back()">Back</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-primary"><button>Log Out</button></a>
+    </div>
+</body>
+</html>

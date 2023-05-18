@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home</title>
+    <style>
+      body {
+        background-color: #f7f7f7;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.1);
+        margin: 0 auto;
+        max-width: 500px;
+        padding: 20px;
+        text-align: center;
+      }
+      .table-container {
+        width: 80%;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      table th,
+      table td {
+        border: 1px solid black;
+        padding: 8px;
+      }
+
+      table th {
+        background-color: lightgray;
+      }
+      h1 {
+        color: #4e4e4e;
+        font-size: 32px;
+        margin: 0;
+        margin-bottom: 20px;
+      }
+      p {
+        color: #4e4e4e;
+        font-size: 18px;
+        margin: 0;
+        margin-bottom: 20px;
+      }
+      button {
+        background-color: #6d4c41;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        transition: all .2s ease-in-out;
+      }
+      button:hover {
+        background-color: #543c2b;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1>Home</h1>
+      <p>Byte Barista User Home Page.</p>
+      <button class="mr-2" onclick="redirectToDashboard()">Go to Dashboard</button>
+      <script>
+        function redirectToDashboard() {
+          window.location.href = "https://us-east-1.quicksight.aws.amazon.com/sn/accounts/722935045421/dashboards/d19d98d4-ec4e-453b-b38c-0b95860f1b1c?directory_alias=byte-barista";
+        }
+      </script>
+    </body>
+      <a href="/upload"><button>Upload</button></a>
+      <button class="mr-2" onclick="redirectToS3()">Archived Data Files</button>
+      <script>
+        function redirectToS3() {
+          window.location.href = "https://s3.console.aws.amazon.com/s3/buckets/byte-barista-data-output-bucket?region=us-east-1&tab=objects";
+        }
+      </script>
+      <p></p>
+      <a href="{{ url_for('logout') }}" class="btn btn-primary"><button>Log Out</button></a>
+      <button onclick="window.history.back()">Back</button>
+    </div>
+    <div class="container mt-5">
+      <body>
+        <h1>Snapshot: Top 5 Selling Products so far!</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in row_product %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p></p>
+        <h1>Snapshot: Top 3 Performing Stores so far!</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Store Neighbourhood</th>
+                    <th>Total Sale Amount to date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in row_sales %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+    </div>
+  </body>
+</html>

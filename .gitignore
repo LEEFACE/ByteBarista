@@ -1,0 +1,13 @@
+## ignore the env file
+.env
+
+## ignore the secrets terraform file
+.tfvars
+
+## ignore the virtual env
+venv/
+
+## ignore terraform state files
+.terraform
+.terraform.lock.hcl
+.terraform.tfstate*

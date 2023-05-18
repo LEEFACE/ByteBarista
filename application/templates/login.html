@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Byte Barista Inventory Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    <style>
+      body {
+        background-color: #f7f7f7;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.1);
+        margin: 0 auto;
+        max-width: 500px;
+        padding: 20px;
+        text-align: center;
+      }
+      h1 {
+        color: #4e4e4e;
+        font-size: 32px;
+        margin: 0;
+        margin-bottom: 20px;
+      }
+      p {
+        color: #4e4e4e;
+        font-size: 18px;
+        margin: 0;
+        margin-bottom: 20px;
+      }
+      button {
+        background-color: #6d4c41;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        transition: all .2s ease-in-out;
+      }
+      button:hover {
+        background-color: #543c2b;
+        cursor: pointer;
+      }
+      .alert-danger {
+        background-color: #FFEBE6;
+        border-color: #FFCCB3;
+        border-radius: 5px;
+        color: #FF5733;
+        font-size: 14px;
+        margin-bottom: 20px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Byte Barista Inventory Login</h1>
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+      <img src="{{ url_for('static', filename='user-log-in.png') }}" alt="Coffee Image" width="200" height="200">
+      <p></p>
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" name="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <p></p>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+      <p></p>
+      <button onclick="window.history.back()">Back</button>
+    </div>
+  </body>
+</html>
